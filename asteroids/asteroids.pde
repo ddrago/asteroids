@@ -1,13 +1,42 @@
+//CONSTANTS
+static final float MAXSPEED = 5;
+static final float ANGULARSTEP = PI/64;
+
 Spaceship s;
-float ox = -width/2;
-float oy = -height/2;
+
+boolean go = false, turnright = false, turnleft = false;
 
 void setup(){
-  s = new Spaceship(ox, oy);
+  s = new Spaceship();
   size(700, 700);
 }
 
 void draw(){
   background(30);
-  s.display();
+  s.update(go, turnright, turnleft);
 }
+
+void keyPressed(){
+  if(keyCode == UP){
+    go = true;
+  }
+  if(keyCode == RIGHT){
+    turnright = true;
+  }
+  if(keyCode == LEFT){
+    turnleft = true;
+  }
+}
+
+void keyReleased(){
+  if(keyCode == UP){
+    go = false;
+  }
+  if(keyCode == RIGHT){
+    turnright = false;
+  }
+  if(keyCode == LEFT){
+    turnleft = false;
+  }
+}
+  
