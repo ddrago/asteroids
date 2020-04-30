@@ -1,6 +1,8 @@
 //CONSTANTS
 static final float MAXSPEED = 5;
-static final float ANGULARSTEP = PI/64;
+static final float ANGULARSTEP = PI/32;
+static final float A = 0.8;
+static final float FRICTION = 0.9;
 
 Spaceship s;
 
