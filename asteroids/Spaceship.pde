@@ -72,10 +72,10 @@ class Spaceship{
   
   private void turn(boolean turnright, boolean turnleft){
     if(turnright){
-      this.setDir(this.getDir() - ANGULARSTEP);
+      this.setDir(this.getDir() + ANGULARSTEP);
     }
     if(turnleft){
-      this.setDir(this.getDir() + ANGULARSTEP);
+      this.setDir(this.getDir() - ANGULARSTEP);
     }
   }
   
