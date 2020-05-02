@@ -6,6 +6,7 @@ class Spaceship{
   private float dir;
   private float v;
   
+  private Cartridge c;
   private int lives;
   
   public Spaceship(){
@@ -15,8 +16,8 @@ class Spaceship{
     
     this.dir = -PI/2;
     this.v = 0;
-    this.a = 1;
     
+    this.c = new Cartridge();
     this.lives = 3;
   }
   
@@ -59,6 +60,11 @@ class Spaceship{
     this.v = v;
   }
   
+  //cartridge
+  public Cartridge getCartridge(){
+    return this.c;
+  }
+  
   //lives
   public int getLives(){
     return this.lives;
@@ -84,51 +90,63 @@ class Spaceship{
   }
   
   private void display(){
-  
-  //the three vertices of our spaceship
-  float x1 = this.getR();
-  float y1 = 0;
-  
-  float x2 = -this.getR();
-  float y2 = this.getR();
-  
-  float x3 = -this.getR();
-  float y3 = -this.getR();
-  
-  //we move the origin of the canvas to wherever the centre of the spaceship is
-  translate(this.getX(), this.getY()); 
-  //we rotate the spaceship to whatever is the direction headed to
-  rotate(this.getDir());
-  
-  //make it nice and pretty
-  noFill();
-  stroke(255);
-  circle(0, 0, 3);
-  triangle(x1, y1, x2, y2, x3, y3);
+    push();
+    
+    //the three vertices of our spaceship
+    float x1 = this.getR();
+    float y1 = 0;
+    
+    float x2 = -this.getR();
+    float y2 = this.getR();
+    
+    float x3 = -this.getR();
+    float y3 = -this.getR();
+    
+    //we move the origin of the canvas to wherever the centre of the spaceship is
+    translate(this.getX(), this.getY()); 
+    //we rotate the spaceship to whatever is the direction headed to
+    rotate(this.getDir());
+    
+    //make it nice and pretty
+    noFill();
+    stroke(255);
+    circle(0, 0, 3);
+    triangle(x1, y1, x2, y2, x3, y3);
+    
+    pop();
   }
   
   public void update(boolean go, boolean turnright, boolean turnleft){
   
-  this.turn(turnright, turnleft);
-  this.move(go);
-  
-  //make the canvas a loop: exit from the right, enter from the left
-  if(this.getX()>width){
-    this.setX(0);
+    this.turn(turnright, turnleft);
+    this.move(go);
+    
+    //make the canvas a loop: exit from the right, enter from the left
+    if(this.getX()>width){
+      this.setX(0);
+    }
+    if(this.getX()<0){
+      this.setX(width);
+    }
+    
+    if(this.getY()>height){
+      this.setY(0);
+    }
+    if(this.getY()<0){
+      this.setY(height);
+    }
+    
+    //finally display the spaceship on the canvas
+    this.display();
+    this.getCartridge().update();
   }
-  if(this.getX()<0){
-    this.setX(width);
-  }
-  
-  if(this.getY()>height){
-    this.setY(0);
-  }
-  if(this.getY()<0){
-    this.setY(height);
-  }
-  
-  //finally display the spaceship on the canvas
-  this.display();
+ 
+ public void shoot(){
+   //only shoot if the cartridge isn't empty
+   if(c.size() < MAXBULLETSNUM){
+     Bullet b = new Bullet(this.getX(), this.getY(), this.getDir());
+     this.getCartridge().add(b);
+   }
  }
   
 }
