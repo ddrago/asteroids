@@ -1,6 +1,7 @@
 class Asteroid{
   private float x, y, r; //choords and radius
   private float v, dir; //speed and direction
+  private int vertices;
   private int tier; //can only be an integer from 1 to 4;
   private FloatDict speeds = new FloatDict();
   private FloatDict radii = new FloatDict();
@@ -12,9 +13,9 @@ class Asteroid{
     //Higher tier (small number) -> big and slow. Low tier (big num)-> smol and fast
     for(int i = 0; i < 4; i++) {
       //maps "<tier as int>" to the max speed divided by a bigger number, the smaller the tier
-      this.speeds.set(str(i), MAXSPEED/(4-i));
+      this.speeds.set(str(i), MAXSPEED/(5-i));
       //maps "<tier as int>" to the max asteroid radius divided by a bigger power of 2 the bigger the tier
-      this.radii.set(str(i), MAXASTEROIDRADIUS/pow(2, i));   
+      this.radii.set(str(i), MAXASTEROIDSIZE/pow(2, i+1));   
     }
     
     /*spawn the asteroid, whatever their tier may be, either from the top border, going down
@@ -32,7 +33,7 @@ class Asteroid{
     switch(border){
       case 0: this.x = random(width);
               this.y = -25;
-              this.dir = random(8*PI/6, 10*PI/6); //directed down, angle between 240° and 300° degrees
+              this.dir = random(2*PI/6, 4*PI/6); //directed down, angle between 240° and 300° degrees
               break;
       case 1: this.x = width + 25;
               this.y = random(height);
@@ -40,7 +41,7 @@ class Asteroid{
               break;
       case 2: this.x = random(width);
               this.y = height + 25;
-              this.dir = random(2*PI/6, 4*PI/6); //directed up, angle between 60° and 120°
+              this.dir = random(8*PI/6, 10*PI/6); //directed up, angle between 60° and 120°
               break;
       case 3: this.x = -25;
               this.y = random(height);
@@ -80,6 +81,10 @@ class Asteroid{
   private float getDir(){
     return this.dir;
   }
+
+  private int getVertices(){
+    return this.vertices;
+  }
   
   private void move(){
     this.setX(this.getX() + this.getV()*cos(this.getDir()));
@@ -88,20 +93,30 @@ class Asteroid{
   
   private void display(){
     push();
-    noFill();
+    fill(30);
     stroke(255);
-    circle(this.getX(), this.getY(), this.getR());
+    //circle(this.getX(), this.getY(), this.getR());
+    translate(this.getX(), this.getY());
+    beginShape();
+    //instead of just using a circle, build a polygon out of a circle
+    for(int i = 0; i<10; i++){
+      float angle = map(i, 0, 10, 0, PI*2);
+      //each vertex' choords depend on the angle
+      float x = this.r*cos(angle);
+      float y = this.r*sin(angle);
+      vertex(x, y);
+    }
+    endShape(CLOSE);
     pop();
   }
   
   private void update(){
-    print("bitch the fuck");
     this.move();
     this.display();
   }
   
   public boolean outOfBounds(){
-    return (x<0 || x>width || y<0 || y>height);
+    return (x<-50 || x>width+50 || y<-50 || y>height+50);
   }
   
   
