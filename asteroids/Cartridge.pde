@@ -10,8 +10,15 @@ class Cartridge{
     this.c.add(b);
   } 
   
+  public void remove(int i){
+    this.c.remove(i);
+  }
+  
   public Bullet get(int i){
-    return this.c.get(i);
+    if(this.size() > 0){
+      return this.c.get(i);
+    }
+    return null;
   }
   
   public void update(){

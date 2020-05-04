@@ -21,9 +21,11 @@ void draw(){
   s.update(go, turnright, turnleft);
   
   //if the number of asteroids doesn't exceed the limit, spawn a new asteroid.
-  if(a.size()<MAXASTEROIDNUM){
-    Asteroid ass = new Asteroid();
-    a.add(ass);
+  if(a.size() == 0){
+    for(int i = 0; i < MAXASTEROIDNUM; i++){
+      Asteroid ass = new Asteroid();
+      a.add(ass);
+    }
   }
   
   //updates each asteroids, delete the out of bounds ones and splits ones hitten by a bullet
@@ -32,7 +34,13 @@ void draw(){
     current.update(); 
     //check if one of the flying bullets hits the current asteroid
     if(s.shotDown(current)){
-      print("yo what the fuck bro\n");
+      a.remove(i);
+      if(current.getTier()>0){
+        Asteroid a1 = new Asteroid(current.getX(), current.getY(), random(2*PI), current.getTier()-1);
+        Asteroid a2 = new Asteroid(current.getX(), current.getY(), random(2*PI), current.getTier()-1);
+        a.add(a1);
+        a.add(a2);
+      }
     }
     
     if(current.outOfBounds()){

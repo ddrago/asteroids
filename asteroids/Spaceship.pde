@@ -151,9 +151,12 @@ class Spaceship{
    
    public boolean shotDown(Asteroid a){
      //iterate through the bullets that have been shot
-     for(int i = this.getCartridge().size() - 1; i <= 0; i--){
-       if(this.getCartridge().get(i).hits(a)){
-         return true;
+     if(this.getCartridge().size() > 0){
+       for(int i = this.getCartridge().size() - 1; i >= 0; i--){
+         if(this.getCartridge().get(i).hits(a)){
+           this.getCartridge().remove(i);
+           return true;
+         }
        }
      }
      return false;
