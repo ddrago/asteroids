@@ -1,10 +1,17 @@
 class Asteroid{
   private float x, y, r; //choords and radius
   private float v, dir; //speed and direction
-  private int vertices;
+  
   private int tier; //can only be an integer from 1 to 4;
+  private int vertNum; //number of vertices
+  
+  private final float MAXASTEROIDSIZE = 100;
+  private final int MAXJAGGEDNESS = 5;
+  private float[] offsets;
+  
   private FloatDict speeds = new FloatDict();
   private FloatDict radii = new FloatDict();
+  private FloatDict vertices = new FloatDict();
   
   
   public Asteroid(){
@@ -15,7 +22,9 @@ class Asteroid{
       //maps "<tier as int>" to the max speed divided by a bigger number, the smaller the tier
       this.speeds.set(str(i), MAXSPEED/(5-i));
       //maps "<tier as int>" to the max asteroid radius divided by a bigger power of 2 the bigger the tier
-      this.radii.set(str(i), MAXASTEROIDSIZE/pow(2, i+1));   
+      this.radii.set(str(i), this.MAXASTEROIDSIZE/pow(2, i+1));  
+      //the bigger, the more vertices. random numbers thrown in that i think will look pretty
+      this.vertices.set(str(i), 4*(4-i)+1);   
     }
     
     /*spawn the asteroid, whatever their tier may be, either from the top border, going down
@@ -25,8 +34,10 @@ class Asteroid{
     */
     this.tier = int(random(4));  //at random, choose what tier will this asteroid be
     
+    //get their tier-dependent radius, speed and number of vertices
     this.r = this.radii.get(str(this.tier));
     this.v = this.speeds.get(str(this.tier));
+    this.vertNum = int(this.vertices.get(str(this.tier)));
     
     int border = int(random(4)); //at random, chose from which border will it spawn
     
@@ -46,6 +57,12 @@ class Asteroid{
       case 3: this.x = -25;
               this.y = random(height);
               this.dir = random(-PI/6, PI/6); //directed right, angle between 30° and -30°
+    }
+    
+    //determine the offset for each vertex, determining how jagged the asteroid will look
+    this.offsets = new float[this.vertNum];
+    for (int i = 0; i < this.vertNum; i++){
+      offsets[i] = random(MAXJAGGEDNESS);
     }
     
     print("asteroid, choords: ", this.x, ", ", this.y, ", v: ", this.v, ", dir: ", this.dir, ", tier: ", this.tier, "\n");   
@@ -81,9 +98,9 @@ class Asteroid{
   private float getDir(){
     return this.dir;
   }
-
-  private int getVertices(){
-    return this.vertices;
+  
+  private int getVertNum(){
+    return this.vertNum;
   }
   
   private void move(){
@@ -99,11 +116,11 @@ class Asteroid{
     translate(this.getX(), this.getY());
     beginShape();
     //instead of just using a circle, build a polygon out of a circle
-    for(int i = 0; i<10; i++){
-      float angle = map(i, 0, 10, 0, PI*2);
+    for(int i = 0; i<this.getVertNum(); i++){
+      float angle = map(i, 0, this.getVertNum(), 0, PI*2);
       //each vertex' choords depend on the angle
-      float x = this.r*cos(angle);
-      float y = this.r*sin(angle);
+      float x = this.getR()*cos(angle) + this.offsets[i];
+      float y = this.getR()*sin(angle) + this.offsets[i];
       vertex(x, y);
     }
     endShape(CLOSE);

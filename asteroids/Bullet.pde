@@ -63,4 +63,9 @@ class Bullet{
   public boolean outOfBounds(){
     return (x<0 || x>width || y<0 || y>height);
   }
+  
+  public boolean hits(Asteroid a){
+    return ( (this.getX()>a.getX()-a.getR()) && (this.getX()<a.getX()+a.getR()) && (this.getY()>a.getY()-a.getR()) && (this.getY()<a.getY()+a.getR()) );
+  }
+  
 }

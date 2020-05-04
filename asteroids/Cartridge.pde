@@ -10,6 +10,10 @@ class Cartridge{
     this.c.add(b);
   } 
   
+  public Bullet get(int i){
+    return this.c.get(i);
+  }
+  
   public void update(){
     //the only way to iterate through a list in this case, is to iterate through it backwards
     
@@ -34,4 +38,5 @@ class Cartridge{
       }
     }
   }
+  
 }

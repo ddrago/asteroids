@@ -4,7 +4,6 @@ static final float ANGULARSTEP = PI/32;
 static final float A = 0.8;
 static final float FRICTION = 0.85;
 static final int MAXBULLETSNUM = 12;
-static final float MAXASTEROIDSIZE = 100;
 static final int MAXASTEROIDNUM = 15;
 
 Spaceship s;
@@ -27,10 +26,16 @@ void draw(){
     a.add(ass);
   }
   
-  //delete the out of bounds asteroids 
-  for(int i = a.size()-1; i>= 0; i--){
-    a.get(i).update(); 
-    if(a.get(i).outOfBounds()){
+  //updates each asteroids, delete the out of bounds ones and splits ones hitten by a bullet
+  for(int i = a.size()-1; i >= 0; i--){
+    Asteroid current = a.get(i);
+    current.update(); 
+    //check if one of the flying bullets hits the current asteroid
+    if(s.shotDown(current)){
+      print("yo what the fuck bro\n");
+    }
+    
+    if(current.outOfBounds()){
       a.remove(i);
     }
   }

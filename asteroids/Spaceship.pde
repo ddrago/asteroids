@@ -141,12 +141,22 @@ class Spaceship{
     this.getCartridge().update();
   }
  
- public void shoot(){
-   //only shoot if the cartridge isn't empty
-   if(c.size() < MAXBULLETSNUM){
-     Bullet b = new Bullet(this.getX(), this.getY(), this.getDir());
-     this.getCartridge().add(b);
+   public void shoot(){
+     //only shoot if the cartridge isn't empty
+     if(c.size() < MAXBULLETSNUM){
+       Bullet b = new Bullet(this.getX(), this.getY(), this.getDir());
+       this.getCartridge().add(b);
+     }
    }
- }
+   
+   public boolean shotDown(Asteroid a){
+     //iterate through the bullets that have been shot
+     for(int i = this.getCartridge().size() - 1; i <= 0; i--){
+       if(this.getCartridge().get(i).hits(a)){
+         return true;
+       }
+     }
+     return false;
+   }
   
 }
