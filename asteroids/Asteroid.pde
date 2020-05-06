@@ -171,6 +171,22 @@ class Asteroid{
   }
   
   private void update(){
+    
+    //make the canvas a loop: exit from the right, enter from the left
+    if(this.getX()>width){
+      this.setX(0);
+    }
+    if(this.getX()<0){
+      this.setX(width);
+    }
+    
+    if(this.getY()>height){
+      this.setY(0);
+    }
+    if(this.getY()<0){
+      this.setY(height);
+    }
+    
     this.move();
     this.display();
   }

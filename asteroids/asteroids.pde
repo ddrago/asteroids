@@ -17,46 +17,44 @@ void setup(){
 }
 
 void draw(){
-  background(30);
-  s.update(go, turnright, turnleft);
-  
-  //if the number of asteroids doesn't exceed the limit, spawn a new asteroid.
-  if(a.size() == 0){
-    for(int i = 0; i < MAXASTEROIDNUM; i++){
-      Asteroid ass = new Asteroid();
-      a.add(ass);
-    }
-  }
-  
-  //updates each asteroids, delete the out of bounds ones and splits ones hitten by a bullet
-  for(int i = a.size()-1; i >= 0; i--){
-    Asteroid current = a.get(i);
-    current.update(); 
-    //check if one of the flying bullets hits the current asteroid
-    if(s.shotDown(current)){
-      a.remove(i);
-      if(current.getTier()>0){
-        Asteroid a1 = new Asteroid(current.getX(), current.getY(), random(2*PI), current.getTier()-1);
-        Asteroid a2 = new Asteroid(current.getX(), current.getY(), random(2*PI), current.getTier()-1);
-        a.add(a1);
-        a.add(a2);
+  if(s.getLives()>=0){
+    background(30);
+    s.update(go, turnright, turnleft);
+    
+    //if the number of asteroids doesn't exceed the limit, spawn a new asteroid.
+    if(a.size() == 0){
+      for(int i = 0; i < MAXASTEROIDNUM; i++){
+        Asteroid ass = new Asteroid();
+        a.add(ass);
       }
     }
     
-    //if the ship drives into an asteroid it will explode
-    if(s.collidesWith(current)){
+    //updates each asteroids, delete the out of bounds ones and splits ones hitten by a bullet
+    for(int i = a.size()-1; i >= 0; i--){
+      Asteroid current = a.get(i);
+      current.update(); 
+      //check if one of the flying bullets hits the current asteroid
+      if(s.shotDown(current)){
+        a.remove(i);
+        if(current.getTier()>0){
+          Asteroid a1 = new Asteroid(current.getX(), current.getY(), random(2*PI), current.getTier()-1);
+          Asteroid a2 = new Asteroid(current.getX(), current.getY(), random(2*PI), current.getTier()-1);
+          a.add(a1);
+          a.add(a2);
+        }
+      }
       
-      /*s.explode();
-      if(s.getLives() > 0){
-        s.respawn();
-      }*/
+      //if the ship is alive and drives into an asteroid it will explode
+      if(s.collidesWith(current) && !s.isDead()){
+        
+        //explosion
+        
+        s.dies();
+        print("lives left: ", s.getLives(), "\n");
+      }
+      
     }
-    
-    if(current.outOfBounds()){
-      a.remove(i);
-    }
-  }
-  
+  }  
 }
 
 void keyPressed(){

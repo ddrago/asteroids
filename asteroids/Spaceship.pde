@@ -10,7 +10,8 @@ class Spaceship{
   
   private Cartridge c;
   private int lives;
-  private boolean respawning = false;
+  private int respawning = 0;  //if the ship is respawning, asteroids will pass through
+  private int dead = 0;
   
   public Spaceship(){
     this.x = width/2;
@@ -75,7 +76,32 @@ class Spaceship{
   public int getLives(){
     return this.lives;
   }
+  public void decreaseLives(){
+    if(this.lives > 0){
+      this.lives = this.lives-1;
+    }
+  }
   
+  public int getRespawning(){
+    return this.respawning;
+  }
+  public void setRespawning(int n){
+    this.respawning = n;
+  }
+  public boolean isRespawning(){
+    return (this.respawning > 0);
+  }
+  
+  public int getDead(){
+    return this.dead;
+  }
+  public void setDead(int n){
+    this.dead = n;
+  }
+  public boolean isDead(){
+    return (this.dead > 0);
+  }
+    
   private void turn(boolean turnright, boolean turnleft){
     if(turnright){
       this.setDir(this.getDir() + ANGULARSTEP);
@@ -105,7 +131,13 @@ class Spaceship{
     
     //make it nice and pretty
     noFill();
-    stroke(255);
+    
+    if(this.isRespawning()){
+      stroke(255/2);
+    }
+    else{
+      stroke(255);
+    }
     circle(0, 0, 3);
     
     triangle( relativeVertices[0][0], relativeVertices[0][1], //first vertex
@@ -135,14 +167,29 @@ class Spaceship{
       this.setY(height);
     }
     
-    //finally display the spaceship on the canvas
-    this.display();
+    //deal with respawn time
+    if (this.isRespawning()){
+      this.setRespawning(this.getRespawning() - 1);
+    }
+    else {
+      this.setRespawning(0);
+    }
+    
+    //deal with dead time
+    if (this.isDead()){ //is dead
+      this.setDead(this.getDead() - 1);
+    }
+    else {
+      this.setDead(0);
+      this.display(); //finally display the spaceship on the canvas
+    }
+ 
     this.getCartridge().update();
   }
  
    public void shoot(){
-     //only shoot if the cartridge isn't empty
-     if(c.size() < MAXBULLETSNUM){
+     //only shoot if the cartridge isn't empty and you are alive
+     if(c.size() < MAXBULLETSNUM && !this.isDead()){
        Bullet b = new Bullet(this.getX(), this.getY(), this.getDir());
        this.getCartridge().add(b);
      }
@@ -162,16 +209,22 @@ class Spaceship{
    }
    
    public boolean collidesWith(Asteroid a){
-     
-     for(int i = 0; i < 3; i++){ 
-       float vertexx = relativeVertices[i][0] + this.getX();
-       float vertexy = relativeVertices[i][1] + this.getY();
-       if( dist(vertexx, vertexy, a.getX(), a.getY()) < a.getR() ) {
-         return true;
+     if(!this.isRespawning()){
+       for(int i = 0; i < 3; i++){ 
+         float vertexx = relativeVertices[i][0] + this.getX();
+         float vertexy = relativeVertices[i][1] + this.getY();
+         if( dist(vertexx, vertexy, a.getX(), a.getY()) < a.getR() ) {
+           return true;
+         }
        }
      }
      return false;
    }
    
+   public void dies(){
+      s.setDead(200);
+      s.setRespawning(500);
+      s.decreaseLives();   
+   }
 
 }
