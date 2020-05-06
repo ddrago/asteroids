@@ -9,13 +9,13 @@ static final int MAXASTEROIDNUM = 15;
 PFont font;
 
 Spaceship s;
+int score = 0;
 ArrayList<Asteroid> a = new ArrayList<Asteroid>();
 
 boolean go = false, turnright = false, turnleft = false;
 
 void setup(){       
   
-  textSize(100);
   font = loadFont("ErasITC-Bold-48.vlw");
   
   s = new Spaceship();
@@ -24,7 +24,9 @@ void setup(){
 }
 
 void draw(){
+  
   if(s.getLives()>=0){
+    
     background(30);
     s.update(go, turnright, turnleft);
     
@@ -42,6 +44,8 @@ void draw(){
       current.update(); 
       //check if one of the flying bullets hits the current asteroid
       if(s.shotDown(current)){
+        score += current.getPoints();
+        print("asteroid of tier ", current.getTier(), " destroyed... ", current.getPoints(), " points gained!\n");
         a.remove(i);
         if(current.getTier()>0){
           Asteroid a1 = new Asteroid(current.getX(), current.getY(), random(2*PI), current.getTier()-1);
@@ -61,10 +65,30 @@ void draw(){
       }
       
     }
+    
+    s.displayLives();
+    
+    push();
+    int scoreSize = 25;
+    int buffer = scoreSize/5;
+    textSize(scoreSize);
+    textAlign(LEFT, CENTER);
+    text(score, buffer, scoreSize/2 + buffer);
+    
+    pop();
+    
   }  
   else {
+    
+    push();
+    
+    textSize(100);
+    textAlign(CENTER);
     text("GAME OVER", width/2, height/2);
+    
+    pop();
   }
+  
 }
 
 void keyPressed(){

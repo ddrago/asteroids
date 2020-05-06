@@ -4,6 +4,7 @@ class Asteroid{
   
   private int tier; //can only be an integer from 1 to 4;
   private int vertNum; //number of vertices
+  private int points;
   
   private final float MAXASTEROIDSIZE = 100;
   private final int MAXJAGGEDNESS = 5;
@@ -12,9 +13,9 @@ class Asteroid{
   private FloatDict speeds = new FloatDict();
   private FloatDict radii = new FloatDict();
   private IntDict vertices = new IntDict();
+  private IntDict pointsDict = new IntDict();
   
-  public Asteroid(){
-    
+  private void fillDicts(){
     //fill the dictionaries with the data necessary. 
     //Higher tier (big num) -> bigger and slower. Low tier (smol num) -> smol and fast
     for(int i = 0; i < 4; i++) {
@@ -23,10 +24,18 @@ class Asteroid{
       //maps "<tier as int>" to the max asteroid radius divided by a bigger power of 2 the bigger the tier
       this.radii.set(str(i), this.MAXASTEROIDSIZE/pow(2, 4-i));  
       //the bigger, the more vertices. random numbers thrown in that i think will look pretty
-      this.vertices.set(str(i), 4*i+5);   
+      this.vertices.set(str(i), 4*i+5); 
+      //the bigger, the less points it gives when shot down
+      this.pointsDict.set(str(i), 5*(i+1));
+      
     }
+  }
+  
+  public Asteroid(){
     
-    /*spawn the asteroid, whatever their tier may be, either from the top border, going down
+    this.fillDicts();
+    
+    /*spawn the asteroid, either from the top border, going down
       from the right border going left
       from the bottom border, going up or
       from the left border, going right.
@@ -37,6 +46,7 @@ class Asteroid{
     this.r = this.radii.get(str(this.tier));
     this.v = this.speeds.get(str(this.tier));
     this.vertNum = this.vertices.get(str(this.tier));
+    this.points = this.pointsDict.get(str(this.tier));
     
     int border = int(random(4)); //at random, chose from which border will it spawn
     
@@ -69,21 +79,13 @@ class Asteroid{
   //just for asteroids spawned out of a previous, bigger, asteroid splitting
   public Asteroid(float x, float y, float dir, int tier){
     
-    //fill the dictionaries with the data necessary. 
-    //Higher tier (big num) -> bigger and slower. Low tier (smol num) -> smol and fast
-    for(int i = 0; i < 4; i++) {
-      //maps "<tier as int>" to the max speed. Low tiers -> MAXSPEED divided by a smaller number -> fast bois
-      this.speeds.set(str(i), MAXSPEED/(i+2));
-      //maps "<tier as int>" to the max asteroid radius divided by a bigger power of 2 the bigger the tier
-      this.radii.set(str(i), this.MAXASTEROIDSIZE/pow(2, 4-i));  
-      //the bigger, the more vertices. random numbers thrown in that i think will look pretty
-      this.vertices.set(str(i), 4*i+5);   
-    }
+    this.fillDicts();
     
     this.x = x;
     this.y = y;
     this.dir = dir;  //technically we could just spawn the random angle here instead of getting it as a parametre...
      //but for flexibility let's pretend it's better like this
+    this.points = this.pointsDict.get(str(this.tier));
     
     if(tier<0 || tier > 4){
       print("what the fuck mate\n");
@@ -124,25 +126,29 @@ class Asteroid{
   }
   
   //R
-  private float getR(){
+  public float getR(){
     return this.r;
   }
   
   //V
-  private float getV(){
+  public float getV(){
     return this.v;
   }
   
   //Dir
-  private float getDir(){
+  public float getDir(){
     return this.dir;
   }
   
-  private int getTier(){
+  public int getTier(){
     return this.tier;
   }
   
-  private int getVertNum(){
+  public int getPoints(){
+    return this.points;
+  }
+  
+  public int getVertNum(){
     return this.vertNum;
   }
   

@@ -9,6 +9,9 @@ class Spaceship{
   private float v;
   
   private Cartridge c;
+  private final int STARTINGLIVES = 3;
+  private final int RESPAWNTIME = 400;
+  private final int DEADTIME = 200;  //THIS MUST BE SMALLER THAN THE RESPAWN TIME
   private int lives;
   private int respawning = 0;  //if the ship is respawning, asteroids will pass through
   private int dead = 0;
@@ -25,7 +28,7 @@ class Spaceship{
     this.v = 0;
     
     this.c = new Cartridge();
-    this.lives = 3;
+    this.lives = this.STARTINGLIVES;
   }
   
   //GETTERS, SETTERS AND INCREMENTERS
@@ -119,30 +122,56 @@ class Spaceship{
     this.setY( this.getY() + sin(this.getDir())*this.getV());
   }
   
+  private void drawShip(float x, float y){
+    triangle( x+relativeVertices[0][0], y+relativeVertices[0][1], //first vertex
+              x+relativeVertices[1][0], y+relativeVertices[1][1], //second vertex
+              x+relativeVertices[2][0], y+relativeVertices[2][0]);//third vertex
+    
+  }
+  
   private void display(){
-    push();
     
-    //we move the origin of the canvas to wherever the centre of the spaceship is
-    translate(this.getX(), this.getY()); 
-    //we rotate the spaceship to whatever is the direction headed to
-    rotate(this.getDir());
-    
-    //make it nice and pretty
-    noFill();
-    
-    if(this.isRespawning()){
-      stroke(255/2);
+    //display the ship (if you ain't ded)
+    if(!this.isDead()){
+      push();
+      //we move the origin of the canvas to wherever the centre of the spaceship is
+      translate(this.getX(), this.getY()); 
+      //we rotate the spaceship to whatever is the direction headed to
+      rotate(this.getDir());
+      //make it nice and pretty
+      noFill();
+      if(this.isRespawning()){
+        stroke(255/2);
+      }
+      else{
+        stroke(255);
+      }
+      circle(0, 0, 3);
+      this.drawShip(0, 0);
+      pop();
     }
-    else{
-      stroke(255);
+  }
+  
+  public void displayLives(){
+    float space = (this.getLives()+1)*this.getR()*2; //pixels
+    float ty = this.getR()*(1.5);
+    float start = (width/2 - space/2) + space/(this.getLives()+1);
+    float end = (width/2 + space/2);
+    for(float tx = start; tx < end; tx += space/(this.getLives()+1)){
+      push();
+      translate(tx, ty);
+      rotate(-PI/2);
+      //make it nice and pretty
+      noFill();
+      if(this.isRespawning()){
+        stroke(255/2);
+      }
+      else{
+        stroke(255);
+      }
+      this.drawShip(0, 0);
+      pop();
     }
-    circle(0, 0, 3);
-    
-    triangle( relativeVertices[0][0], relativeVertices[0][1], //first vertex
-              relativeVertices[1][0], relativeVertices[1][1], //second vertex
-              relativeVertices[2][0], relativeVertices[2][0]);//third vertex
-    
-    pop();
   }
   
   public void update(boolean go, boolean turnright, boolean turnleft){
@@ -176,11 +205,11 @@ class Spaceship{
     }
     else {
       this.setDead(0);
-      this.display(); //finally display the spaceship on the canvas
       this.turn(turnright, turnleft);
       this.move(go);
     }
  
+    this.display(); //finally display the spaceship on the canvas
     this.getCartridge().update();
   }
  
@@ -222,9 +251,10 @@ class Spaceship{
    }
    
    public void dies(){
-      s.setDead(200);
-      s.setRespawning(500);
-      s.decreaseLives();   
+      s.setDead(this.DEADTIME);  //time for the explosion animation
+      s.setRespawning(this.RESPAWNTIME);
+      s.decreaseLives();   //detract a life
+      s.setV(0);  //stop the ship
    }
 
 }
