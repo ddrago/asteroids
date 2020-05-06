@@ -3,16 +3,22 @@ class Spaceship{
   private float y;
   private float r;
   
+  private float[][] relativeVertices;
+  
   private float dir;
   private float v;
   
   private Cartridge c;
   private int lives;
+  private boolean respawning = false;
   
   public Spaceship(){
     this.x = width/2;
     this.y = height/2;
     this.r = 10;
+    
+    //the three vertices of our spaceship
+    relativeVertices = new float[][]{ {this.getR(), 0}, {-this.getR(), this.getR()}, {-this.getR(), -this.getR()} };
     
     this.dir = -PI/2;
     this.v = 0;
@@ -92,16 +98,6 @@ class Spaceship{
   private void display(){
     push();
     
-    //the three vertices of our spaceship
-    float x1 = this.getR();
-    float y1 = 0;
-    
-    float x2 = -this.getR();
-    float y2 = this.getR();
-    
-    float x3 = -this.getR();
-    float y3 = -this.getR();
-    
     //we move the origin of the canvas to wherever the centre of the spaceship is
     translate(this.getX(), this.getY()); 
     //we rotate the spaceship to whatever is the direction headed to
@@ -111,7 +107,10 @@ class Spaceship{
     noFill();
     stroke(255);
     circle(0, 0, 3);
-    triangle(x1, y1, x2, y2, x3, y3);
+    
+    triangle( relativeVertices[0][0], relativeVertices[0][1], //first vertex
+              relativeVertices[1][0], relativeVertices[1][1], //second vertex
+              relativeVertices[2][0], relativeVertices[2][0]);//third vertex
     
     pop();
   }
@@ -161,5 +160,18 @@ class Spaceship{
      }
      return false;
    }
-  
+   
+   public boolean collidesWith(Asteroid a){
+     
+     for(int i = 0; i < 3; i++){ 
+       float vertexx = relativeVertices[i][0] + this.getX();
+       float vertexy = relativeVertices[i][1] + this.getY();
+       if( dist(vertexx, vertexy, a.getX(), a.getY()) < a.getR() ) {
+         return true;
+       }
+     }
+     return false;
+   }
+   
+
 }

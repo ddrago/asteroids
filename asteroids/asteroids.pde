@@ -43,6 +43,15 @@ void draw(){
       }
     }
     
+    //if the ship drives into an asteroid it will explode
+    if(s.collidesWith(current)){
+      
+      /*s.explode();
+      if(s.getLives() > 0){
+        s.respawn();
+      }*/
+    }
+    
     if(current.outOfBounds()){
       a.remove(i);
     }

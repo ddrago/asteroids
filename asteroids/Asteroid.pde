@@ -104,7 +104,6 @@ class Asteroid{
       offsets[i] = random(MAXJAGGEDNESS);
     }
     
-    print("splinter asteroid, choords: ", this.x, ", ", this.y, ", v: ", this.v, ", dir: ", this.dir, ", tier: ", this.tier, "\n");   
   }
   
   //SETTERS AND GETTERS

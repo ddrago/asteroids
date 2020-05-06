@@ -65,7 +65,7 @@ class Bullet{
   }
   
   public boolean hits(Asteroid a){
-    return ( (this.getX()>a.getX()-a.getR()) && (this.getX()<a.getX()+a.getR()) && (this.getY()>a.getY()-a.getR()) && (this.getY()<a.getY()+a.getR()) );
+    return ( dist(this.getX(), this.getY(), a.getX(), a.getY()) < a.getR());
   }
   
 }
