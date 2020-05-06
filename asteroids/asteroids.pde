@@ -11,6 +11,7 @@ PFont font;
 Spaceship s;
 int score = 0;
 ArrayList<Asteroid> a = new ArrayList<Asteroid>();
+ArrayList<Explosion> explosions = new ArrayList<Explosion>();
 
 boolean go = false, turnright = false, turnleft = false;
 
@@ -30,7 +31,7 @@ void draw(){
     background(30);
     s.update(go, turnright, turnleft);
     
-    //if the number of asteroids doesn't exceed the limit, spawn a new asteroid.
+    //Every time there are no more asteroids in the field, spawn a new wave
     if(a.size() == 0){
       for(int i = 0; i < MAXASTEROIDNUM; i++){
         Asteroid ass = new Asteroid();
@@ -58,14 +59,27 @@ void draw(){
       //if the ship is alive and drives into an asteroid it will explode
       if(s.collidesWith(current) && !s.isDead()){
         
-        //explosion
+        Explosion e = new Explosion(s.getX(), s.getY());
+        explosions.add(e);
         
         s.dies();
-        print("lives left: ", s.getLives(), "\n");
       }
       
     }
     
+    //display and update the explosions
+    for(int i = explosions.size()-1; i >= 0; i--){
+    
+      if(explosions.get(i).update()){
+        //maybe play sound?
+      }
+      else {
+        
+      }
+      
+    }
+    
+    //display all the lateral info: lives, score, etc
     s.displayLives();
     
     push();
