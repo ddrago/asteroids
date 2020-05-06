@@ -6,13 +6,20 @@ static final float FRICTION = 0.85;
 static final int MAXBULLETSNUM = 12;
 static final int MAXASTEROIDNUM = 15;
 
+PFont font;
+
 Spaceship s;
 ArrayList<Asteroid> a = new ArrayList<Asteroid>();
 
 boolean go = false, turnright = false, turnleft = false;
 
 void setup(){       
+  
+  textSize(100);
+  font = loadFont("ErasITC-Bold-48.vlw");
+  
   s = new Spaceship();
+  
   size(700, 700);
 }
 
@@ -55,6 +62,9 @@ void draw(){
       
     }
   }  
+  else {
+    text("GAME OVER", width/2, height/2);
+  }
 }
 
 void keyPressed(){

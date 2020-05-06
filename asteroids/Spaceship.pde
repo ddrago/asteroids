@@ -77,9 +77,7 @@ class Spaceship{
     return this.lives;
   }
   public void decreaseLives(){
-    if(this.lives > 0){
-      this.lives = this.lives-1;
-    }
+    this.lives = this.lives-1;
   }
   
   public int getRespawning(){
@@ -148,9 +146,6 @@ class Spaceship{
   }
   
   public void update(boolean go, boolean turnright, boolean turnleft){
-  
-    this.turn(turnright, turnleft);
-    this.move(go);
     
     //make the canvas a loop: exit from the right, enter from the left
     if(this.getX()>width){
@@ -182,6 +177,8 @@ class Spaceship{
     else {
       this.setDead(0);
       this.display(); //finally display the spaceship on the canvas
+      this.turn(turnright, turnleft);
+      this.move(go);
     }
  
     this.getCartridge().update();
@@ -213,9 +210,12 @@ class Spaceship{
        for(int i = 0; i < 3; i++){ 
          float vertexx = relativeVertices[i][0] + this.getX();
          float vertexy = relativeVertices[i][1] + this.getY();
-         if( dist(vertexx, vertexy, a.getX(), a.getY()) < a.getR() ) {
+         if( dist(vertexx, vertexy, a.getX(), a.getY()) < a.getR() ) {  //collides with one of the vertices
            return true;
          }
+       }
+       if( dist(this.getX(), this.getY(), a.getX(), a.getY()) < a.getR() ) {  //collides with the center
+           return true;
        }
      }
      return false;
